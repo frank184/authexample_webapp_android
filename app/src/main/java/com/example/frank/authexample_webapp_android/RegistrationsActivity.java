@@ -3,6 +3,7 @@ package com.example.frank.authexample_webapp_android;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -58,7 +59,9 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
 
     // UI references.
     private AutoCompleteTextView mEmailView;
+    private EditText mUsernameView;
     private EditText mPasswordView;
+    private EditText mPasswordConfirmationView;
     private View mProgressView;
     private View mLoginFormView;
 
@@ -70,8 +73,13 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
+        mUsernameView = (EditText) findViewById(R.id.username);
+
         mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+        mPasswordConfirmationView = (EditText) findViewById(R.id.password_confirmation);
+
+        mPasswordConfirmationView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
@@ -82,11 +90,19 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        Button signUpButton = (Button) findViewById(R.id.email_sign_up_button);
+        signUpButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+
+        Button signInButton = (Button) findViewById(R.id.email_sign_in_button);
+        signInButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                redirectToSessionsActivity();
             }
         });
 
@@ -137,6 +153,11 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
         }
     }
 
+    private void redirectToSessionsActivity() {
+        Intent intent = new Intent(this, SessionsActivity.class);
+        startActivity(intent);
+    }
+
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -160,9 +181,23 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (TextUtils.isEmpty(email)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        } else if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(email)) {
+            mPasswordConfirmationView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordConfirmationView;
+            cancel = true;
+        } else if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+            mPasswordConfirmationView.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordConfirmationView;
             cancel = true;
         }
 

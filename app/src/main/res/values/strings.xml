@@ -3,10 +3,12 @@
 
     <!-- Strings related to login -->
     <string name="prompt_email_or_username">Email or Username</string>
+    <string name="prompt_username">Username (Optional)</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in</string>
-    <string name="action_sign_in_short">Sign in</string>
+    <string name="prompt_password_confirmation">Password Confirmation</string>
+    <string name="action_sign_in">Sign In</string>
+    <string name="action_sign_in_short">Sign In</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
@@ -14,6 +16,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="title_activity_registrations">Sign up</string>
-    <string name="action_sign_up">Sign up</string>
+    <string name="title_activity_registrations">Sign Up</string>
+    <string name="title_activity_sessions">Sign In</string>
+    <string name="action_sign_up">Sign Up</string>
 </resources>

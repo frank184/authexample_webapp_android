@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.content.Intent;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -82,11 +83,19 @@ public class SessionsActivity extends AppCompatActivity implements LoaderCallbac
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        Button signInButton = (Button) findViewById(R.id.email_sign_in_button);
+        signInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+
+        Button signUpButton = (Button) findViewById(R.id.email_sign_up_button);
+        signUpButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                redirectToRegistrationsActivity();
             }
         });
 
@@ -135,6 +144,11 @@ public class SessionsActivity extends AppCompatActivity implements LoaderCallbac
                 populateAutoComplete();
             }
         }
+    }
+
+    private void redirectToRegistrationsActivity() {
+        Intent intent = new Intent(this, RegistrationsActivity.class);
+        startActivity(intent);
     }
 
 
