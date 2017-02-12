@@ -37,7 +37,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class SessionsActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class RegistrationsActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -65,7 +65,7 @@ public class SessionsActivity extends AppCompatActivity implements LoaderCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sessions);
+        setContentView(R.layout.activity_registrations);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -160,11 +160,7 @@ public class SessionsActivity extends AppCompatActivity implements LoaderCallbac
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError(getString(R.string.error_field_required));
-            focusView = mPasswordView;
-            cancel = true;
-        } else if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -277,7 +273,7 @@ public class SessionsActivity extends AppCompatActivity implements LoaderCallbac
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(SessionsActivity.this,
+                new ArrayAdapter<>(RegistrationsActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
@@ -326,6 +322,8 @@ public class SessionsActivity extends AppCompatActivity implements LoaderCallbac
                     return pieces[1].equals(mPassword);
                 }
             }
+
+            // TODO: register the new account here.
             return true;
         }
 

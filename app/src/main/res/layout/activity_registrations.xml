@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.frank.authexample_webapp_android.SessionsActivity">
+    tools:context="com.example.frank.authexample_webapp_android.RegistrationsActivity">
 
     <!-- Login progress -->
     <ProgressBar
@@ -38,7 +38,7 @@
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_email_or_username"
+                    android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true" />
@@ -70,17 +70,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/action_sign_in"
-                android:textStyle="bold"
-                android:background="@color/colorPrimary"
-                android:textColor="@color/white"/>
-
-            <Button
-                android:id="@+id/email_sign_up_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/action_sign_up"
                 android:textStyle="bold" />
 
         </LinearLayout>
