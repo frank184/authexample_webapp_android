@@ -25,6 +25,9 @@
     <string name="api_version_path">/api/v1</string>
     <string name="registrations_path">/registrations</string>
     <string name="sessions_path">/sessions</string>
+    <string name="tasks_path">/tasks</string>
+
+
     <string name="title_activity_tasks">Tasks</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"

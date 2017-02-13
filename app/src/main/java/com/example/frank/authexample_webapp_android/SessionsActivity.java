@@ -362,7 +362,7 @@ public class SessionsActivity extends AppCompatActivity implements LoaderCallbac
                 if (response.code() == 204) {
                     redirectToTasksActivity();
                 } else {
-                    Log.d("Registrations Response:", response.body().string());
+                    Log.d("Sessions Response:", response.body().string());
                     return false;
                 }
             } catch (IOException e) {
