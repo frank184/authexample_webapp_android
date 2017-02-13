@@ -55,7 +55,7 @@ public class SessionsActivity extends AppCompatActivity implements LoaderCallbac
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private UserSignInTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -203,7 +203,7 @@ public class SessionsActivity extends AppCompatActivity implements LoaderCallbac
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserSignInTask(email, password);
             mAuthTask.execute((Void) null);
         }
     }
@@ -312,12 +312,12 @@ public class SessionsActivity extends AppCompatActivity implements LoaderCallbac
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserSignInTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
         private final String mPassword;
 
-        UserLoginTask(String email, String password) {
+        UserSignInTask(String email, String password) {
             mEmail = email;
             mPassword = password;
         }

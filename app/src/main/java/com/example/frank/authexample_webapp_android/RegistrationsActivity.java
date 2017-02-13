@@ -30,8 +30,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+
+import okhttp3.OkHttpClient;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import java.io.IOException;
+import org.json.JSONException;
+
+import android.content.res.Resources;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -45,17 +60,18 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
+    private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
+    private Resources res;
+    private String HOSTNAME;
+    private String API_VERSION_PATH;
+    private String REGISTRATIONS_URL;
+
+    private OkHttpClient client = new OkHttpClient();
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private UserSignUpTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -69,6 +85,11 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrations);
+        // Set up resources
+        res = getResources();
+        HOSTNAME = res.getString(R.string.hostname);
+        API_VERSION_PATH = res.getString(R.string.api_version_path);
+        REGISTRATIONS_URL = HOSTNAME + API_VERSION_PATH + res.getString(R.string.registrations_path);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -158,6 +179,11 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
         startActivity(intent);
     }
 
+    private void redirectToTasksActivity() {
+        Intent intent = new Intent(this, TasksActivity.class);
+        startActivity(intent);
+    }
+
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -220,7 +246,7 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserSignUpTask(email, password);
             mAuthTask.execute((Void) null);
         }
     }
@@ -329,37 +355,45 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserSignUpTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
         private final String mPassword;
 
-        UserLoginTask(String email, String password) {
+        UserSignUpTask(String email, String password) {
             mEmail = email;
             mPassword = password;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                HashMap<String, String> credentials = new HashMap<String, String>() {{
+                    put("email", mEmail);
+                    put("password", mPassword);
+                }};
+                JSONObject json = new JSONObject(credentials);
+                Response response = post(REGISTRATIONS_URL, json.toString());
+                if (response.code() == 201) {
+                    redirectToTasksActivity();
+                } else {
+
+                }
+            } catch (IOException e) {
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
             return true;
+        }
+
+        Response post(String url, String json) throws IOException {
+            RequestBody body = RequestBody.create(JSON, json);
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .build();
+            Response response = client.newCall(request).execute();
+            return response;
         }
 
         @Override
