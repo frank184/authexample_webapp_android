@@ -200,8 +200,10 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
+        String username = mUsernameView.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String password_confirmation = mPasswordConfirmationView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -246,7 +248,7 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserSignUpTask(email, password);
+            mAuthTask = new UserSignUpTask(username, email, password, password_confirmation);
             mAuthTask.execute((Void) null);
         }
     }
@@ -357,23 +359,30 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
      */
     public class UserSignUpTask extends AsyncTask<Void, Void, Boolean> {
 
+        private final String mUsername;
         private final String mEmail;
         private final String mPassword;
+        private final String mPasswordConfirmation;
 
-        UserSignUpTask(String email, String password) {
+        UserSignUpTask(String username, String email, String password, String password_confirmation) {
+            mUsername = username;
             mEmail = email;
             mPassword = password;
+            mPasswordConfirmation = password;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
                 HashMap<String, String> credentials = new HashMap<String, String>() {{
+                    put("username", mUsername);
                     put("email", mEmail);
                     put("password", mPassword);
+                    put("password", mPasswordConfirmation);
                 }};
                 JSONObject json = new JSONObject(credentials);
                 Response response = post(REGISTRATIONS_URL, json.toString());
+                System.out.print(response.body().toString());
                 if (response.code() == 201) {
                     redirectToTasksActivity();
                 } else {
