@@ -35,7 +35,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
-import java.util.Map;
 
 
 import okhttp3.OkHttpClient;
@@ -44,9 +43,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import java.io.IOException;
-import org.json.JSONException;
 
 import android.content.res.Resources;
+import android.util.Log;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -67,7 +66,7 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
     private String API_VERSION_PATH;
     private String REGISTRATIONS_URL;
 
-    private OkHttpClient client = new OkHttpClient();
+    private OkHttpClient client;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -90,6 +89,10 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
         HOSTNAME = res.getString(R.string.hostname);
         API_VERSION_PATH = res.getString(R.string.api_version_path);
         REGISTRATIONS_URL = HOSTNAME + API_VERSION_PATH + res.getString(R.string.registrations_path);
+
+        // OkHttpClient instance
+        client = new OkHttpClient();
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -184,7 +187,6 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
         startActivity(intent);
     }
 
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -254,12 +256,10 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
 
@@ -378,15 +378,15 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
                     put("username", mUsername);
                     put("email", mEmail);
                     put("password", mPassword);
-                    put("password", mPasswordConfirmation);
+                    put("password_confirmation", mPasswordConfirmation);
                 }};
                 JSONObject json = new JSONObject(credentials);
                 Response response = post(REGISTRATIONS_URL, json.toString());
-                System.out.print(response.body().toString());
                 if (response.code() == 201) {
                     redirectToTasksActivity();
                 } else {
-
+                    Log.d("Registrations Response:", response.body().toString());
+                    return false;
                 }
             } catch (IOException e) {
                 return false;
@@ -395,7 +395,7 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
             return true;
         }
 
-        Response post(String url, String json) throws IOException {
+        private Response post(String url, String json) throws IOException {
             RequestBody body = RequestBody.create(JSON, json);
             Request request = new Request.Builder()
                     .url(url)
@@ -413,7 +413,7 @@ public class RegistrationsActivity extends AppCompatActivity implements LoaderCa
             if (success) {
                 finish();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.setError(getString(R.string.error_incorrect_email_username_password));
                 mPasswordView.requestFocus();
             }
         }
